@@ -1,0 +1,62 @@
+abstract class Account {
+  int accountNumber;
+  double balance;
+
+  Account(this.accountNumber, this.balance);
+
+  void deposit(double amount) {
+    print('Deposit amount: \$${amount}');
+    balance += amount;
+  }
+
+  void withdraw(double amount);
+}
+
+class SavingsAccount extends Account {
+  double interestRate;
+
+  SavingsAccount(int accountNumber, double balance, this.interestRate)
+      : super(accountNumber, balance);
+
+  @override
+  void withdraw(double amount) {
+    print('Withdrawal amount: \$${amount}');
+    balance -= amount;
+    balance += balance * interestRate;
+  }
+}
+
+class CurrentAccount extends Account {
+  double overdraftLimit;
+
+  CurrentAccount(int accountNumber, double balance, this.overdraftLimit)
+      : super(accountNumber, balance);
+
+  @override
+  void withdraw(double amount) {
+    print('Withdrawal amount: \$${amount}');
+    if (amount <= balance + overdraftLimit) {
+      balance -= amount;
+    } else {
+      print("Insufficient funds. Withdrawal amount exceeds overdraft limit.");
+    }
+  }
+}
+
+void main() {
+  // Creating an instance of SavingsAccount
+  SavingsAccount savingsAccount = SavingsAccount(12345, 1000.0, 0.05);
+  print('Savings Account - Initial balance: \$${savingsAccount.balance}');
+  savingsAccount.deposit(500.0);
+  print('Savings Account - Balance after deposit: \$${savingsAccount.balance}');
+  savingsAccount.withdraw(200.0);
+  print('Savings Account - Balance after withdrawal: \$${savingsAccount.balance}');
+
+  // Creating an instance of CurrentAccount
+  CurrentAccount currentAccount = CurrentAccount(67890, 2000.0, 1000.0);
+  print('Current Account - Initial balance: \$${currentAccount.balance}');
+  currentAccount.deposit(800.0);
+  print('Current Account - Balance after deposit: \$${currentAccount.balance}');
+  currentAccount.withdraw(4000.0); // Exceeds overdraft limit
+  print('Current Account - Balance after withdrawal: \$${currentAccount.balance}');
+}
